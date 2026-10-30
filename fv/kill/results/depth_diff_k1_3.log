@@ -1,0 +1,9 @@
+dataset/access_control/wallet_02_refund_nosub.sol 13 16.6
+dataset/front_running/ERC20.sol 40 47.7
+dataset/unchecked_low_level_calls/0x07f7ecb66d788ab01dc93b9b71a88401de7d0f2e.sol 40 91.7
+dataset/unchecked_low_level_calls/0x663e4229142a27f00bafb5d087e1e730648314c3.sol 39 7.0
+dataset/unchecked_low_level_calls/0x7d09edb07d23acb532a82be3da5c17d9d85806b4.sol 32 124.2
+dataset/unchecked_low_level_calls/0xb620cee6b52f96f3c6b253e6eea556aa2d214a99.sol 40 240.0
+dataset/unchecked_low_level_calls/0xd2018bfaa266a9ec0a1a84b061640faa009def76.sol 6 12.1
+dataset/unchecked_low_level_calls/0xe4eabdca81e31d9acbc4af76b30f532b6ed7f3bf.sol 6 9.7
+dataset/unchecked_low_level_calls/king_of_the_ether_throne.sol 25 38.4

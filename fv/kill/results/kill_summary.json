@@ -1,0 +1,81 @@
+{
+ "n": 2093,
+ "verdict": {
+  "equiv_bounded": 352,
+  "timeout": 402,
+  "killed": 755,
+  "error": 584
+ },
+ "by_split": {
+  "train": {
+   "equiv_bounded": 282,
+   "killed": 490,
+   "timeout": 202,
+   "error": 564
+  },
+  "val": {
+   "timeout": 103,
+   "killed": 106,
+   "equiv_bounded": 40,
+   "error": 20
+  },
+  "test": {
+   "killed": 159,
+   "equiv_bounded": 30,
+   "timeout": 97
+  }
+ },
+ "by_operator_first_order": {
+  "DELMOD": {
+   "killed": 28,
+   "timeout": 15,
+   "equiv_bounded": 3,
+   "error": 8
+  },
+  "DELREQ": {
+   "equiv_bounded": 49,
+   "timeout": 43,
+   "killed": 75,
+   "error": 222
+  },
+  "DELTHROW": {
+   "timeout": 4,
+   "killed": 6,
+   "equiv_bounded": 13,
+   "error": 15
+  },
+  "REENT": {
+   "equiv_bounded": 8,
+   "error": 4
+  },
+  "RELOP": {
+   "killed": 34,
+   "timeout": 70,
+   "equiv_bounded": 59,
+   "error": 148
+  },
+  "SAFEMATH": {
+   "timeout": 7,
+   "error": 7,
+   "equiv_bounded": 5
+  },
+  "TXORIGIN": {
+   "timeout": 20,
+   "killed": 60,
+   "equiv_bounded": 13,
+   "error": 33
+  },
+  "UNCHK": {
+   "equiv_bounded": 31,
+   "timeout": 39,
+   "killed": 13,
+   "error": 21
+  }
+ },
+ "families": 116,
+ "killed_pairs_by_split": {
+  "val": 106,
+  "train": 490,
+  "test": 159
+ }
+}

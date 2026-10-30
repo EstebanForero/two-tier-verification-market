@@ -11,3 +11,13 @@ data/**/*.bin
 *.ckpt
 *.pt
 .env
+# DAppSCAN has no license: never commit its data or derived files
+/dappscan-data/
+*.dappscan.json
+data/dappscan/derived/
+
+# metrics that include DAppSCAN-derived evaluation (dataset unlicensed) stay out of repo
+ml/results/
+fv/halmos/cache/
+fv/halmos/out/
+ml/results/gate_matched.json

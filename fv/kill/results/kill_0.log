@@ -1,0 +1,13 @@
+dataset/arithmetic/timelock.sol 19 35.3
+dataset/bad_randomness/lottery.sol 6 10.8
+dataset/front_running/FindThisHash.sol 3 9.2
+dataset/reentrancy/0x96edbe868531bd23a6c05e9d0c424ea64fb1b78b.sol 3 11.7
+dataset/reentrancy/reentrancy_bonus.sol 6 6.7
+dataset/reentrancy/spank_chain_payment.sol 119 6.4
+dataset/time_manipulation/timed_crowdsale.sol 1 4.2
+dataset/unchecked_low_level_calls/0x3a0e9acd953ffc0dd18d63603488846a6b8b2b01.sol 3 8.9
+dataset/unchecked_low_level_calls/0x70f9eddb3931491aab1aeafbc1e7f1ca2a012db4.sol 28 23.2
+dataset/unchecked_low_level_calls/0x89c1b3807d4c67df034fffb62f3509561218d30b.sol 31 108.2
+dataset/unchecked_low_level_calls/0xb0510d68f210b7db66e8c7c814f22680f2b8d1d6.sol 36 95.8
+dataset/unchecked_low_level_calls/0xbebbfe5b549f5db6e6c78ca97cac19d1fb03082c.sol 21 26.9
+dataset/unchecked_low_level_calls/0xe82f0742a71a02b9e9ffc142fdcb6eb1ed06fb87.sol 28 22.9

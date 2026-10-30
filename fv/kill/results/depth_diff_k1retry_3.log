@@ -1,0 +1,8 @@
+dataset/access_control/proxy.sol 2 4.6
+dataset/reentrancy/0x23a91059fdc9579a9fbd0edc5f2ea0bfdb70deb4.sol 1 4.6
+dataset/reentrancy/0x8c7777c45481dba411450c228cb692ac3d550344.sol 1 5.1
+dataset/unchecked_low_level_calls/0x4051334adc52057aca763453820cb0e045076ef3.sol 2 5.1
+dataset/unchecked_low_level_calls/0x663e4229142a27f00bafb5d087e1e730648314c3.sol 198 7.9
+dataset/unchecked_low_level_calls/0xa46edd6a9a93feec36576ee5048146870ea2c3ae.sol 2 4.8
+dataset/unchecked_low_level_calls/0xd2018bfaa266a9ec0a1a84b061640faa009def76.sol 12 14.6
+dataset/unchecked_low_level_calls/0xe4eabdca81e31d9acbc4af76b30f532b6ed7f3bf.sol 13 15.4

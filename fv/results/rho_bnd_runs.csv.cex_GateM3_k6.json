@@ -1,0 +1,1 @@
+{"p_ops_uint256_78ff9a4_00": {"full_name": "p_ops_uint256_78ff9a4_00", "variable_name": "ops", "solidity_type": "uint256", "smt_type": "BitVec 256", "size_bits": 256, "value": 32}, "p_xs[5]_uint256_06b00cd_00": {"full_name": "p_xs[5]_uint256_06b00cd_00", "variable_name": "xs[5]", "solidity_type": "uint256", "smt_type": "BitVec 256", "size_bits": 256, "value": 112}}
