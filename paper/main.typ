@@ -38,9 +38,11 @@ Given a set of contracts, a set of properties per contract, and a fixed FV budge
 = Related Work
 // Read depth is limited: every source below has so far been read only at the abstract, excerpt, or metadata level. Specific claims are marked TODO until the full text has been checked.
 
-*The verifier's dilemma.* Luu et al. named the _verifier's dilemma_: when checking is costly, rational participants may accept results without validating them @luu2015demystifying. Truebit adds an incentive layer around an interactive verification game @teutsch2019truebit #todo[confirm forced-error/jackpot details from the full text]. For optimistic rollups, Landis models how incentives break down when fraud never occurs @landis2023incentive, while Proof of Diligence @sheng2024diligence and RAT @lee2025rat require watchers to keep showing that they are actually verifying. #todo[state their security assumptions and equilibrium numbers only after reading the full text] Our design faces the same dilemma twice: for "safe" claims that nobody refutes, and for screeners when bugs never surface. Paying screeners for calibration through a proper scoring rule gives them a reward stream that does not depend on fraud occurring.
+*The verifier's dilemma.* Luu et al. named the _verifier's dilemma_: when checking is costly, rational participants may accept results without validating them @luu2015demystifying. Truebit adds an incentive layer around an on-chain bisection verification game @teutsch2019truebit. To keep verifiers attentive, it uses _forced errors_: the protocol occasionally requires solvers to submit wrong answers and pays a jackpot to verifiers who catch them. Our anti-laziness spot checks follow the same idea, with injected mutants playing the role of forced errors. They work only if mutants cannot be told apart from real bugs, which is a condition we measure rather than assume. For optimistic rollups, Landis models how incentives break down when fraud never occurs @landis2023incentive, while Proof of Diligence @sheng2024diligence and RAT @lee2025rat require watchers to keep showing that they are actually verifying. #todo[state their security assumptions and equilibrium numbers only after reading the full text] Our design faces the same dilemma twice: for "safe" claims that nobody refutes, and for screeners when bugs never surface. Paying screeners for calibration through a proper scoring rule gives them a reward stream that does not depend on fraud occurring.
 
-*Challenge and refutation games.* Refereed delegation shows how a client can obtain a correct answer as long as one of several servers is honest @canetti2013refereed @canetti2011oneround, and it underlies the bisection fraud proofs of Arbitrum @kalodner2018arbitrum, BoLD @alvarez2024bold @arbitrum_bold_docs, and the OP Stack @optimism_fault_proofs. #todo[BoLD delay bounds and OP Stack details pending full read] These games settle disputes about the output of a _deterministic computation_. We instead settle claims about _all_ executions of a contract, where only the existential side, a counterexample, has a cheap complete witness. Our refutation window is therefore one-sided. We borrow BoLD's principle that the outcome should not depend on who bonded the claim. #todo[verify this principle in the BoLD paper]
+*Challenge and refutation games.* Refereed delegation shows how a client can obtain a correct answer as long as one of several servers is honest @canetti2013refereed @canetti2011oneround, and it underlies the bisection fraud proofs of Arbitrum @kalodner2018arbitrum, BoLD @alvarez2024bold @arbitrum_bold_docs, and OP Stack fault proofs #todo[OP Stack source dropped as unverified; re-add once its spec is read]. #todo[BoLD delay bounds and OP Stack details pending full read] These games settle disputes about the output of a _deterministic computation_. We instead settle claims about _all_ executions of a contract, where only the existential side, a counterexample, has a cheap complete witness. Our refutation window is therefore one-sided. We borrow BoLD's principle that the outcome should not depend on who bonded the claim. #todo[verify this principle in the BoLD paper]
+
+*Proof debates.* SPRIG proposes staked debates over proofs. A challenger posts a bounty to question a step, the prover's stake goes to whoever finds a flaw, disputes descend to machine-checked base cases, and a claim that survives long enough unchallenged is treated as trusted @carre2021sprig #todo[Protocol Researcher read the whitepaper; confirm this summary against it]. Our prover tier, with stakes, slashing on refutation, and payment for bounded claims after a refutation window, is close to this design. Our prover tier differs in three ways. It targets EVM programs and SMT/BMC certificates rather than mathematical proofs. Its slashing depends on the certificate type. And ML forecasts route the verification budget.
 
 *Proof markets.* Proof$phi$ proposes an incentive-compatible auction for zero-knowledge proof generation @wang2024proofphi, and Ethereum researchers have discussed L1 prover markets @ethresearch_prover_market_proposal @ethresearch_prover_market_design. #todo[specifics of Proof$phi$ collusion handling and the ethresear.ch designs pending full read and author verification] These markets buy proofs of statements already known to be valid. Tier 2 buys answers to open questions whose cost is unknown and may be unbounded, and no prover market we know of uses forecasts from one tier to route the work of another.
 
@@ -68,6 +70,63 @@ We place the market at the application layer as a contract-level escrow on Ether
 == Budget Routing
 == Optional Extensions
 #todo[Combinatorial LMSR over correlated properties; anti-laziness spot checks.]
+
+= Dataset <sec-dataset>
+// Outline from PLAN.md Stage 1. Numbers are targets, not results.
+#todo[Fill in when Stage 1 (Dataset v1) exits.]
+== Sources
+- *SmartBugs Curated:* about 143 contracts across the DASP categories, pinned by commit and compiled per contract with a pinned `solc` to runtime bytecode and a CFG. #todo[cite SmartBugs, DASP]
+- *Mutants:* injected with SuMo/Gambit-style operators (reentrancy, unchecked call, removed access control, arithmetic, `tx.origin`), with seeds. For each mutant we record the operator, its location, and whether a Halmos property kills it. #todo[cite SuMo, Gambit, Halmos]
+- *Real labels:* DeFiHackLabs reproductions, SolidiFI, and Web3Bugs/Code4rena findings (license-checked). #todo[cite]
+- *Presumed-safe set:* audited, long-lived, high-TVL contracts. These labels are one-sided, and we state that caveat explicitly.
+== Properties
+Each contract gets property templates written as Halmos `check_` functions: no-drain, withdrawal always possible, owner-only actions, and balance conservation.
+== Labels, Deduplication, and Splits
+- Each record is a tuple (contract, property, label, provenance).
+- We deduplicate by bytecode hash and by near-duplicate detection.
+- Splits are made by contract family to prevent leakage, then frozen and hashed.
+- Targets: at least 2k labelled pairs, at least 30% of them mutants and at least 10% real exploits.
+- We provide a datasheet with sizes, class balance, and provenance, and `make data` rebuilds the dataset.
+== Threats to Validity
+- Mutant-artifact leakage: we report metrics on a real-only test set and on unseen mutation operators.
+- Few real bugs: we report real-only and mutant results separately.
+- Injected bugs may differ from real bugs. Mutants could carry syntactic or structural fingerprints, so a screener might learn the artifacts of injection rather than the vulnerabilities themselves. A strategic screener or prover could also recognize mutant-based spot checks and shirk on real items. We test this with a probe classifier that tries to separate mutant bytecode from real-bug bytecode within the same vulnerability class, and we never settle scoring-rule payments on mutant labels alone.
+
+= Methodology <sec-method>
+// Outline from PLAN.md Stages 2-6, mapped to RQ1-RQ4.
+#todo[Expand as each stage lands.]
+== Research Questions
+- *RQ1 (mechanism):* are scoring-rule screeners and certificate-paid provers jointly incentive compatible under delayed, one-sided ground truth?
+- *RQ2 (routing):* does ML routing raise recall\@budget over uniform and heuristic routing, and does it stay robust to deflating, lazy, or colluding screeners?
+- *RQ3 (certificates):* which certificate types are cheap enough to check that they can be slashable?
+- *RQ4 (ML):* how calibrated can a bytecode screener be, and how does calibration translate into market efficiency?
+== FV Pipeline and Certificate Costs (RQ3)
+- Halmos and hevm runners with uniform JSON output: verdict, depth $k$, timeout, path count, time, and memory.
+- Counterexamples are converted into Foundry tests and replayable traces, and we record their replay gas.
+- Bounded-safe claims are tagged with (tool, $k$, timeout).
+- Unbounded claims use CHC invariants (SMTChecker, Eldarica, or Z3 Spacer), re-checked with one query per clause.
+- Measurements: solve versus check cost for each certificate type, and the empirical $rho_"bnd"(k) = P("bug" | "bounded-safe at depth" k)$ estimated from mutants, for at least three depths.
+== ML Screeners (RQ4)
+- *Baselines:* opcode n-grams with logistic regression or gradient boosting, and Slither/Mythril feature heuristics.
+- *Stronger models:* a GNN on CFG basic blocks, and/or a small opcode transformer.
+- *Calibration:* temperature or isotonic scaling. We report ECE, Brier score, log-loss, AUROC, and recall\@budget, over 5 seeds with confidence intervals.
+- *Shift tests:* a real-only test set and unseen mutation operators.
+== Mechanism Analysis and Simulation (RQ1, RQ2)
+- Formal statements:
+  - incentive compatibility of screener reporting under an IPW audit;
+  - a bond bound $b > P / (1 - phi)$;
+  - manipulation bounds under the $eta$ floor and stake caps.
+- An agent-based simulation with parameters calibrated from the measured certificate costs, $rho_"bnd"$, and screener calibration. It sweeps the fraction of deflating, lazy, Sybil, and colluding agents.
+== On-Chain Prototype
+- Foundry implementations of `ScreenerBook`, `ProverRegistry`, `Router`, and `Escrow`.
+- Unit, fuzz, and invariant tests: bond conservation, no double payout, and monotonic refutation windows.
+- Gas is measured for each report and claim.
+== Experiments
+- E1: routing recall.
+- E2: coalition robustness.
+- E3: settlement cost and latency per certificate type.
+- E4: economics (payouts, bond sizes, break-even TVL, gas).
+- E5: ablations (no $eta$ floor, median instead of robust aggregator, no IPW).
 
 = Evaluation
 #todo[FV pipeline (Halmos/hevm, SmartBugs Curated, mutation), screener baseline, agent-based simulation, Foundry escrow demo.]
