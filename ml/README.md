@@ -26,4 +26,19 @@ On SmartBugs orig-only (n=15), calibration is meaningless (1–2 positives per c
   from DAppSCAN val+test DApps). Not a meaningful success: the two sets differ in codebase size/style and partly in
   compiler (DAppSCAN includes 0.5.10–0.5.17, mutants ≤0.5.0). The gate is detecting the corpus, not the
   "mutant-ness". Next step: an exact solc-version match plus size-matched sampling, or a within-contract gate.
-- DeFiHackLabs / SolidiFI labels: **not fetched, not run.**
+- **`gate.py` (run 2026-10-30, `results/gate_metrics.json`, gitignored).** Eval = val+test splits. Each gate is
+  also run with a length-only baseline (log of bytecode length) as a confound control.
+
+| gate | AUC opcode model | AUC length-only | eval mutants / others |
+|---|---|---|---|
+| A mutant vs own SmartBugs original | 0.783 | 0.656 | 555 / 40 |
+| B mutant vs DAppSCAN (solc<0.6) | 1.000 | 0.781 | 555 / 26 |
+| B2 same, exact solc match (0.4.0–0.5.0 intersection) | 1.000 | 0.862 | 242 / 7 |
+| C mutant vs SolidiFI (all, solc 0.5.0/0.5.12) | 1.000 | 0.939 | 555 / 91 |
+| C2 SolidiFI exact solc | skipped: only 1 mutant compiled with 0.5.0 | | |
+  Reading: mutants are perfectly separable from other corpora even with solc matched. Bytecode size alone gives
+  AUC 0.78–0.94, so the gate mostly detects the corpus (SmartBugs toy contracts vs production code), not
+  mutation artifacts. The only like-for-like gate (A, same code base) gives 0.78. Eval negatives are tiny (7–91).
+- SolidiFI: commit 4b0573e, 350/350 compiled, 350 unique runtimes, kept in /workspace/data/solidifi (contracts
+  keep their Etherscan licenses, so no data goes in the repo). Its bugs are injected too, so it is not a real-bug set.
+- DeFiHackLabs: **not fetched / not run** (victim bytecode needs chain RPC or explorer access, not set up).

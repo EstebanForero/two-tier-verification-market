@@ -1,0 +1,29 @@
+[PASS] check_AddF(uint256) 0.01s
+[FAIL] check_AddM_unchecked(uint256) 0.12s
+[FAIL] check_AddV(uint256) 0.12s
+Symbolic test result: 1 passed; 2 failed; time: 0.26s
+[PASS] check_BankF(uint256,uint256) 0.13s
+[FAIL] check_BankV(uint256,uint256) 0.12s
+Symbolic test result: 1 passed; 1 failed; time: 0.25s
+[TIMEOUT] check_MulF(uint256) 60.11s
+[FAIL] check_MulV(uint256) 0.44s
+Symbolic test result: 0 passed; 2 failed; time: 60.55s
+[PASS] check_RetF() 0.01s
+[FAIL] check_RetV() 0.11s
+Symbolic test result: 1 passed; 1 failed; time: 0.13s
+[PASS] check_SubF(uint256) 0.12s
+[FAIL] check_SubM_relop(uint256) 0.12s
+[FAIL] check_SubV(uint256) 0.12s
+Symbolic test result: 1 passed; 2 failed; time: 0.37s
+[PASS] check_WalletF(uint256,uint256) 0.03s
+[FAIL] check_WalletV(uint256,uint256) 0.04s
+Symbolic test result: 1 passed; 1 failed; time: 0.08s
+[PASS] check_XferF(address,address,uint256,uint256,uint256) (paths: 6, time: 
+[FAIL] check_XferM_delreq(address,address,uint256,uint256,uint256) (paths: 6, 
+[PASS] check_XferV(address,address,uint256,uint256,uint256) (paths: 6, time: 
+Symbolic test result: 2 passed; 1 failed; time: 0.51s
+[PASS] check_seq_k1(uint256,uint256[12]) 0.03s
+[PASS] check_seq_k2(uint256,uint256[12]) 0.11s
+[PASS] check_seq_k3(uint256,uint256[12]) 0.42s
+[PASS] check_seq_k4(uint256,uint256[12]) 1.66s
+[PASS] check_seq_k6(uint256,uint256[12]) 20.44s

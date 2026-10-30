@@ -56,10 +56,24 @@ bounded/`safe` claim must name the property hash (spec bugs pass silently).
 | BankF | PASS | 0.14 s | – |
 | RetV / RetF | FAIL / PASS | 0.12 / 0.01 s | – |
 | XferV / XferF / XferM_delreq | PASS ×3 (weak spec) | 0.06–0.48 s | – |
-Wall clock for the whole run: 67.7 s. Re-run with fixed spec: see `results/props_v2.log` if present.
+Wall clock for the whole run: 67.7 s.
+
+**Re-run after the spec fix (props_v2, 2026-10-30, `results/props_v2.log`):** same verdicts for Add/Sub/Mul/Wallet/Bank/Ret
+(MulF TIMEOUT 60.11 s again). Transfer with the no-inflation property: XferM_delreq **FAIL (killed)**, XferF PASS, XferV PASS.
+XferV still passes because the harness assumes `x + y` does not overflow (bounded total supply), and under that
+assumption its unchecked `+=` cannot wrap. This is a correct "safe" under a stated assumption, so the claim scope has to include the assumptions.
 
 ## Kill status of the 2,093 dataset mutants
-NOT done. Properties above are hand-written per ported contract; the 2,093 mutants are 0.4.x sources compiled
+See `kill/` (differential kill, below). The text that follows was the earlier plan.
+Earlier status: NOT done. Properties above are hand-written per ported contract; the 2,093 mutants are 0.4.x sources compiled
 with old solc and have no generic harness yet. `pairs.csv` therefore has no `fv_killed` column; "keep only killed
 mutants" (novelty-watch #6) is **pending**. Plan: bytecode-level generic properties (no-selfdestruct-by-stranger,
 no-ETH-drain-by-stranger, owner-slot-unchanged-by-stranger) run on deployed runtime bytecode via `vm.etch`.
+
+## kill/ — differential Halmos kill filter over all dataset mutants
+`kill/kill.py` etches the original and the mutant runtime bytecode at two addresses, makes the same symbolic call
+on both (selector + 2 symbolic words, symbolic sender, symbolic value < 2^96), and asserts equal success flag, returndata,
+ETH balance and storage slots 0–7. A mutant counts as **killed** if Halmos finds a counterexample, **equiv_bounded** if no
+difference exists in this scope, and **timeout** if there is no model within the 10 s solver timeout (or another failure).
+Limits: one call, starting from empty storage (no constructor state), and only 2 argument words. This is
+non-equivalence, i.e. a kill against a differential property, not against a security property. `results/kill.csv`.
