@@ -6,7 +6,7 @@ Protocol Researcher, 2026-10-30. Sources: see survey.md and references.bib.
 - `MarketEscrow`: holds the bounty pool and the stakes of screeners and provers.
 - `ScreenerBook`: commit-reveal of risk probabilities per (codehash, property). Scores are settled later against a resolution oracle.
 - `ProverRegistry`: provers submit certificates.
-  - Counterexamples are replayable EVM traces. They are checked by an on-chain or optimistic re-execution adapter, for example a fault-proof VM in the style of Cannon or BoLD, so a single interactive dispute settles them.
+  - Counterexamples are replayable EVM traces. They are checked by an on-chain or optimistic re-execution adapter, for example a BoLD-style fault-proof game (`alvarez2024bold`), so a single interactive dispute settles them.
   - CHC/invariant certificates go to a checker contract or to an off-chain checker plus a challenge game.
   - Bounded "safe" claims open a refutation window, and the reward decays with p_bug.
 - `Router`: allocates the fixed FV budget from the reported scores, using commit-reveal and randomized spot checks.
@@ -19,7 +19,7 @@ Protocol Researcher, 2026-10-30. Sources: see survey.md and references.bib.
 | Gas | Trace replay is cheap for short traces. Certificate checking on-chain is likely infeasible, so it needs off-chain checking plus a challenge game |
 | MEV | Front-running of counterexample submissions (bounty theft) and of score reveals. Use commit-reveal with a binding to the submitter address |
 | Upgrade path | Fast: a proxy or versioned markets; we can iterate in 3–4 months |
-| Slashing hooks | Only stake held in the escrow. Restaking (e.g. EigenLayer-style AVS) is possible but adds trust assumptions we have not surveyed |
+| Slashing hooks | Only stake held in the escrow. Restaked security is a documented alternative: Proof of Diligence (`sheng2024diligence`, App. A) runs its watchtowers as 10 EigenLayer operators with restaked ETH and routes slashing through EigenLayer's slasher contract. We have not read EigenLayer's own whitepaper, so its trust assumptions are not assessed here |
 
 ## Option B: protocol-level (enshrined)
 Model this on the ethresear.ch L1 prover-market proposal: a system contract plus attester enforcement. One could imagine the protocol reserving a "verification prize" that is paid when a certificate is included, with attesters checking availability, possibly using ePBS-style (EIP-7732) builder payment plumbing.

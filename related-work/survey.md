@@ -19,6 +19,7 @@ Protocol Researcher, 2026-10-30 (rev. 2). BibTeX keys refer to `references.bib`.
 | lee2025rat | arXiv 2505.24393 | abstract + intro excerpt |
 | eip7732 | EIP | abstract |
 | hanson2007lmsr | J. Prediction Markets 2007 | abstract + intro |
+| carre2021sprig | arXiv 2102.03044v4 (SPRIG whitepaper, Oct 2021) | **full text read** (all 46 pp., incl. Appendices 7–8; figure contents garbled by extraction) |
 
 ## 1. The verifier's dilemma
 
@@ -50,6 +51,8 @@ Protocol Researcher, 2026-10-30 (rev. 2). BibTeX keys refer to `references.bib`.
 ## 2. Challenge and refutation games
 - **Refereed delegation (Canetti, Riva & Rothblum)** (abstract): correct answer recovered if ≥1 of several servers is honest; log rounds, collision-resistant hashing. Truebit states its game is "essentially due to" this work.
 - **Arbitrum (Kalodner et al. 2018)** (metadata only): original bisection dispute design.
+- **SPRIG (Carré, Gabriel, Hongler, Lacerda & Capano 2021; full text).** A recursive claim/question debate over *mathematical* proofs: a claimer posts a hierarchical proof sketch of level L with a stake pair (σ↑, σ↓); any skeptic may pay a bounty β to question one sub-statement, which must be answered within τ by a level-(L−1) claim, and so on down to a level-0 machine-checkable proof that a contract verifies automatically (computation cost c₀ burnt). An unanswered question invalidates its claim (σ↑ to the originating question, σ↓ to the first defeating question); the first validated answer collects the question's bounty. It analyses attacks (carpet-bomber, nitpicker, evasive prover, sandbagger, plagiarist) and a two-level signaling game with a unique Perfect Bayesian Equilibrium, showing that stakes too low to make challenging worthwhile give a no-challenge equilibrium in which acceptance is uninformative (Type-I error ½). It even proposes security-audit bounties (§5.3) and derivative markets on outcomes (§5.5).
+  *Relation:* closest prior design for *∀-claims settled by a machine checker*, but its burden is on the claimer to unroll proofs on demand, and it has no ML/forecast tier.
 - **BoLD (Alvarez et al. 2024; full text).**
   - *Threat model.* L1 is live and safe, at least one honest party; adversary may censor honest transactions for at most C_max rounds in aggregate (conservatively ~1 week on Ethereum), order transactions, attempt resource exhaustion and delay attacks. Nominal delay δ per move.
   - *Problem with Arbitrum Classic.* Two-party chess-clock challenges; under partial concurrency an attacker with N stakes can delay ≈2N challenge periods (N−1 confederates lose slowly), which is why Classic was permissioned.
@@ -77,7 +80,7 @@ Protocol Researcher, 2026-10-30 (rev. 2). BibTeX keys refer to `references.bib`.
 ## 4. Verifier networks, watchtowers, information markets
 - PoD and RAT (§1) are the closest staked, monitored, paid-for-diligence verifier networks.
 - **Hanson LMSR (2007)** (abstract + intro): market scoring rules elicit consensus probabilities; logarithmic versions preserve conditional independence — supports the brief's optional combinatorial LMSR.
-- **Solidified bug prediction market (Munoz-McDonald, Aug 1, 2018; full text).** Per-contract market tied to deployed bytecode with an end date; "bug" and "bug-free" outcome tokens each pay 1 SOLID; the contract author funds an automated market maker; built on Gnosis prediction-market contracts. Bug hunters can buy "bug" tokens and then report the bug. Resolution initially by Solidified's centralized Bug Verification Oracle (decentralization planned per their whitepaper §4.6, not read); Augur rejected as oracle because bug validity is ambiguous. Claims insider trading is not a concern because the code is immutable. **Closest prior concept to Tier 1.**
+- **Solidified bug prediction market (Munoz-McDonald, Aug 1, 2018; full text).** Per-contract market tied to deployed bytecode with an end date; "bug" and "bug-free" outcome tokens each pay 1 SOLID; the market creator supplies liquidity that funds an automated market maker; built on Gnosis prediction-market contracts. Bug hunters can buy "bug" tokens and then report the bug. Resolution initially by Solidified's centralized Bug Verification Oracle (decentralization planned per their whitepaper §4.6, not read); Augur rejected as oracle because bug validity is ambiguous. Claims insider trading is not a concern because the code is immutable. **Closest prior concept to Tier 1.**
 
 **Gap.** Solidified resolves by a centralized human oracle and has no FV tier. We add: (1) machine-checkable resolution (counterexamples/certificates); (2) screeners as calibrated models scored per property by a proper scoring rule, not traders; (3) prices steer verification effort, creating a routing-manipulation incentive absent from a stand-alone market. Note Solidified's "buy bug tokens then report" is exactly the insider profit route we must analyse for screeners who also act as provers.
 
