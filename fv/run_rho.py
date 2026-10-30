@@ -34,11 +34,11 @@ done = {(r['target'], int(r['bound_k'])) for r in rows}
 for tgt, (fam, mid, cls, gt, dmin) in T.items():
     for k in K:
         if (tgt, k) in done: continue
-        if any(r['target'] == tgt and r['verdict'] == 'timeout' and int(r['bound_k']) < k for r in rows): continue  # deeper k cannot be cheaper; skip
+        if any(r['target'] == tgt and r['verdict'] in ('timeout', 'error') and int(r['bound_k']) < k for r in rows): continue  # deeper k cannot be cheaper; skip
         js = f'/tmp/h_{tgt}_{k}.json'; t0 = time.time()
         try:
             r = subprocess.run(['halmos', '--match-contract', f'^T_{tgt}$', '--match-test', f'^check_seq_k{k}\\(', '--loop', '16',
-                                '--solver-timeout-assertion', f'{TO}s', '--json-output', js], cwd=HP, capture_output=True, text=True, env=env, timeout=TO * 4 + 60)
+                                '--solver-timeout-assertion', f'{TO}s', '--json-output', js], cwd=HP, capture_output=True, text=True, env=env, timeout=TO * 3)
             res = json.load(open(js))['test_results']; tr = next(iter(res.values()))[0]
             verdict = {0: 'safe', 1: 'cex'}.get(tr['exitcode'], 'error')
             if tr['exitcode'] == 1 and not tr.get('models'): verdict = 'timeout' if 'TIMEOUT' in r.stdout else 'error'
