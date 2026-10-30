@@ -25,18 +25,19 @@ if RETRY:  # only retry rows that earlier first-pass runs left undecided
     done |= {k for k, v in prev.items() if v not in ('timeout', 'error')} | ({(r['family'], r['variant']) for r in rows} - set(prev))
 out = list(csv.DictReader(open(OUT))) if OUT.exists() else []
 def harness(k, sec):
-    ps = ', '.join(f'bytes4 s{i}, bytes32 x{i}, bytes32 y{i}, address c{i}, uint96 v{i}' for i in range(k))
-    args = ', '.join(f's{i}, x{i}, y{i}, c{i}, v{i}' for i in range(k))
+    # fixed-size arrays (not 5k scalars) avoid solc 'stack too deep' for k >= 2
+    ps = f'bytes4[{k}] memory s, bytes32[{k}] memory x, bytes32[{k}] memory y, address[{k}] memory c, uint96[{k}] memory v'
+    args = 's, x, y, c, v'
     h = 'pragma solidity ^0.8.24;\nimport "forge-std/Test.sol";\ncontract K is Test {\n  address constant A = address(0xA0000); address constant B = address(0xB0000);\n'
     if sec:
         h += f'  function p(bytes memory code, {ps}) internal {{\n    vm.etch(A, code); vm.deal(A, 1 ether);\n'
-        for i in range(k): h += f'    vm.assume(c{i} != A && c{i} != address(this)); vm.deal(c{i}, uint(v{i}) * 2); vm.prank(c{i}); A.call{{value: v{i}}}(abi.encodePacked(s{i}, x{i}, y{i}));\n'
+        for i in range(k): h += f'    vm.assume(c[{i}] != A && c[{i}] != address(this)); vm.deal(c[{i}], uint(v[{i}]) * 2); vm.prank(c[{i}]); A.call{{value: v[{i}]}}(abi.encodePacked(s[{i}], x[{i}], y[{i}]));\n'
         h += '    assert(A.balance >= 1 ether); assert(A.code.length > 0);\n  }\n'
     else:
         h += f'  function d(bytes memory o, bytes memory m, {ps}) internal {{\n    vm.etch(A, o); vm.etch(B, m); bool s1; bool s2; bytes memory r1; bytes memory r2;\n'
-        for i in range(k): h += (f'    vm.assume(c{i} != A && c{i} != B && c{i} != address(this)); vm.deal(c{i}, uint(v{i}) * 2);\n'
-            f'    vm.prank(c{i}); (s1, r1) = A.call{{value: v{i}}}(abi.encodePacked(s{i}, x{i}, y{i}));\n'
-            f'    vm.prank(c{i}); (s2, r2) = B.call{{value: v{i}}}(abi.encodePacked(s{i}, x{i}, y{i}));\n'
+        for i in range(k): h += (f'    vm.assume(c[{i}] != A && c[{i}] != B && c[{i}] != address(this)); vm.deal(c[{i}], uint(v[{i}]) * 2);\n'
+            f'    vm.prank(c[{i}]); (s1, r1) = A.call{{value: v[{i}]}}(abi.encodePacked(s[{i}], x[{i}], y[{i}]));\n'
+            f'    vm.prank(c[{i}]); (s2, r2) = B.call{{value: v[{i}]}}(abi.encodePacked(s[{i}], x[{i}], y[{i}]));\n'
             '    assert(s1 == s2); assert(keccak256(r1) == keccak256(r2));\n')
         h += '    assert(A.balance == B.balance);\n    for (uint i = 0; i < 8; i++) assert(vm.load(A, bytes32(i)) == vm.load(B, bytes32(i)));\n  }\n'
     return '// SPDX-License-Identifier: MIT\n' + h, ps, args

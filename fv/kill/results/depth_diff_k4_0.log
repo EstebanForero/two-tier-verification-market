@@ -1,0 +1,12 @@
+dataset/access_control/FibonacciBalance.sol 13 4.1
+dataset/access_control/incorrect_constructor_name3.sol 1 4.1
+dataset/access_control/parity_wallet_bug_1.sol 68 4.3
+dataset/access_control/rubixi.sol 10 4.3
+dataset/access_control/wallet_03_wrong_constructor.sol 2 4.0
+dataset/arithmetic/tokensalechallenge.sol 10 3.9
+dataset/bad_randomness/lottery.sol 6 3.8
+dataset/bad_randomness/smart_billions.sol 126 5.8
+dataset/front_running/FindThisHash.sol 3 4.7
+dataset/reentrancy/0xb5e1b1ee15c6fa0e48fce100125569d430f1bd12.sol 1 4.4
+dataset/reentrancy/modifier_reentrancy.sol 1 4.2
+dataset/reentrancy/reentrancy_dao.sol 6 4.6

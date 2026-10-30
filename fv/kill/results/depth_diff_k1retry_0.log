@@ -1,0 +1,12 @@
+dataset/access_control/parity_wallet_bug_1.sol 34 136.5
+dataset/bad_randomness/smart_billions.sol 87 6.6
+dataset/front_running/FindThisHash.sol 3 6.2
+dataset/reentrancy/0xb5e1b1ee15c6fa0e48fce100125569d430f1bd12.sol 1 11.2
+dataset/reentrancy/spank_chain_payment.sol 119 13.7
+dataset/unchecked_low_level_calls/0x4a66ad0bca2d700f11e1f2fc2c106f7d3264504c.sol 8 15.2
+dataset/unchecked_low_level_calls/0x5aa88d2901c68fda244f1d0584400368d2c8e739.sol 5 22.9
+dataset/unchecked_low_level_calls/0x70f9eddb3931491aab1aeafbc1e7f1ca2a012db4.sol 11 30.8
+dataset/unchecked_low_level_calls/0x806a6bd219f162442d992bdc4ee6eba1f2c5a707.sol 11 277.8
+dataset/unchecked_low_level_calls/0x958a8f594101d2c0485a52319f29b2647f2ebc06.sol 21 82.7
+dataset/unchecked_low_level_calls/0xd5967fed03e85d1cce44cab284695b41bc675b5c.sol 2 5.3
+dataset/unchecked_low_level_calls/0xe82f0742a71a02b9e9ffc142fdcb6eb1ed06fb87.sol 10 10.9

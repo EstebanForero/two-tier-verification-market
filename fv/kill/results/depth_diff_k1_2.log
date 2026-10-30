@@ -1,0 +1,8 @@
+dataset/arithmetic/BECToken.sol 38 122.8
+dataset/bad_randomness/etheraffle.sol 40 240.1
+dataset/unchecked_low_level_calls/0x3f2ef511aa6e75231e4deafc7a3d2ecab3741de2.sol 6 16.4
+dataset/unchecked_low_level_calls/0x7a4349a749e59a5736efb7826ee3496a2dfd5489.sol 6 12.7
+dataset/unchecked_low_level_calls/0x89c1b3807d4c67df034fffb62f3509561218d30b.sol 34 219.2
+dataset/unchecked_low_level_calls/0xa1fceeff3acc57d257b917e30c4df661401d6431.sol 6 4.5
+dataset/unchecked_low_level_calls/0xe09b1ab8111c2729a76f16de96bc86a7af837928.sol 37 240.0
+dataset/unchecked_low_level_calls/0xec329ffc97d75fe03428ae155fc7793431487f63.sol 34 50.1

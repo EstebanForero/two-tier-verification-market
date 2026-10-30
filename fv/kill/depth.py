@@ -22,7 +22,7 @@ for k in range(1, KMAX + 1):
     if MODE == 'diff' and k == 1:
         first = rows('kill'); run(tag, [i for i in alive if i not in first], 20, 240, 1)
         if not run(f'depth_diff_k1retry', [i for i in alive if first.get(i, {}).get('verdict') in ('timeout', 'error')], 40, 480, 1): pass
-    elif not run(tag, alive, 20, 240, k): break
+    elif not run(tag, alive, 20, 1800, k): break  # k>=2: ~100 s per mutant at k=3, so a larger per-family cap
     done = {}
     for t in ([ 'kill', tag, 'depth_diff_k1retry'] if (MODE == 'diff' and k == 1) else [tag]): done.update(rows(t))
     alive = [i for i in alive if done.get(i, {}).get('verdict') != KILL]

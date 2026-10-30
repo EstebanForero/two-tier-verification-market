@@ -1,0 +1,13 @@
+dataset/access_control/incorrect_constructor_name2.sol 1 4.1
+dataset/access_control/mycontract.sol 1 4.0
+dataset/access_control/proxy.sol 2 4.1
+dataset/access_control/wallet_02_refund_nosub.sol 5 4.4
+dataset/arithmetic/token.sol 1 3.8
+dataset/bad_randomness/guess_the_random_number.sol 1 3.7
+dataset/front_running/ERC20.sol 36 3.9
+dataset/other/crypto_roulette.sol 5 4.6
+dataset/reentrancy/0x23a91059fdc9579a9fbd0edc5f2ea0bfdb70deb4.sol 1 4.3
+dataset/reentrancy/0x627fa62ccbb1c1b04ffaecd72a53e37fc0e17839.sol 1 4.4
+dataset/reentrancy/0x8c7777c45481dba411450c228cb692ac3d550344.sol 1 4.0
+dataset/reentrancy/0xaae1f51cf3339f18b6d3f3bdc75a5facd744b0b8.sol 3 4.2
+dataset/reentrancy/0xbe4041d55db380c5ae9d4a9b9703f1ed4e7e3888.sol 3 4.4

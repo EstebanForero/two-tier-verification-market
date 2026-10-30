@@ -1,0 +1,10 @@
+dataset/access_control/parity_wallet_bug_1.sol 40 167.7
+dataset/access_control/rubixi.sol 40 237.6
+dataset/access_control/wallet_03_wrong_constructor.sol 5 12.1
+dataset/bad_randomness/smart_billions.sol 40 162.0
+dataset/reentrancy/spank_chain_payment.sol 33 204.1
+dataset/unchecked_low_level_calls/0x70f9eddb3931491aab1aeafbc1e7f1ca2a012db4.sol 6 10.9
+dataset/unchecked_low_level_calls/0x806a6bd219f162442d992bdc4ee6eba1f2c5a707.sol 6 10.5
+dataset/unchecked_low_level_calls/0x958a8f594101d2c0485a52319f29b2647f2ebc06.sol 34 89.7
+dataset/unchecked_low_level_calls/0xb0510d68f210b7db66e8c7c814f22680f2b8d1d6.sol 40 123.9
+dataset/unchecked_low_level_calls/0xe82f0742a71a02b9e9ffc142fdcb6eb1ed06fb87.sol 6 8.0
