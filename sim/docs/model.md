@@ -124,3 +124,11 @@ Window length tradeoff (illustrative): refutation probability within W for a bug
 
 ## References
 See analysis.md §References (shared list).
+
+## v0.2 additions (Oct 30, 2026)
+- **Refuter bonus R_ref** on top of φ·b. Self-refutation by a Sybil is unprofitable iff b > R_ref/(1−φ). There must be a burn: with φ = 1 the attack is profitable for any bond (results_v02 E4).
+- **Duplicate kills:** mutant and real-bug CEX rewards use geometric decay. Total J/2^(k−1), split equally among the k killer identities (replaces 1/n).
+- **Invalid certificates:** CEX or UCERT failing the checker forfeits the full per-claim bond. φ goes to the checker if one is designated; the rest is burned.
+- **Leave-one-out reference:** r_ix = Agg(reports excluding i), computed with the same aggregator.
+- **Aggregator:** default is now the stake-capped trimmed log-odds mean (weights min(s_i, cap), trim 25% of weight mass per tail). Once audit data exists, the recommended variant also multiplies weights by an audit-set skill factor.
+- **q̂ for BSAFE payout and window length:** a snapshot from the skill-weighted trimmed aggregator, taken before the claim, plus a window floor W_min. The window floor and a larger bond were the effective parts (E5).
