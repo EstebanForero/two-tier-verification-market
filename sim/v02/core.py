@@ -44,6 +44,8 @@ class Params:
     # window
     W0: float = 1.0; kappa_W: float = 3.0; W_min: float = 0.0; lam: float = 0.7; phi: float = 0.5
     ref_bonus: float = 0.0
+    search_cost: float = 0.0  # effort cost per routed task searched (honest/cheat/Sybil); 0 reproduces v0.2
+    safe_pay_rule: str = "base"  # base | tied | kill_required
     collude_supp: bool = False; defend_supp: bool = False; sybil_selfref: bool = False
 
 def mutant_payout(k_honest, k_attacker_ids, J, scheme):
@@ -88,8 +90,9 @@ def run(p: Params, seed=0):
         mut = rng.random(p.n_tasks) < p.mutant_rate
         cex_found = np.zeros(p.n_tasks, bool)
         for x in np.flatnonzero(routed):
-            team = rng.choice(p.n_prov, p.prov_per_task, replace=False)
+            team = rng.choice(p.n_prov, p.prov_per_task, replace=False); poster_killed = False
             searchers = team[ptype[team] != 1]
+            prov_pay[searchers] -= p.search_cost
             hit_bug = searchers[rng.random(len(searchers)) < p.detect] if y[x] else []
             hit_mut = searchers[rng.random(len(searchers)) < p.detect] if mut[x] else []
             if len(hit_bug):
@@ -103,6 +106,7 @@ def run(p: Params, seed=0):
                 for k in hit_mut:
                     mult = p.sybil_clones if k == sybil else 1
                     prov_pay[k] += mult * mutant_payout(ids, 0, p.J, p.reward_scheme); prov_kills[k] += 1
+                    if k == team[0]: poster_killed = True
             for k in team[ptype[team] == 2]:                       # invalid certificate: always caught by checker
                 if rng.random() < p.cheat_rate: prov_pay[k] -= p.bond; st["burned"] += p.bond
             if not cex_found[x]:                                    # BSAFE claim -> refutation window
@@ -110,6 +114,8 @@ def run(p: Params, seed=0):
                 W = p.W0*(1 + p.kappa_W*qx); W = max(W, p.W_min)
                 q_pay = qx
                 pay_safe = p.beta_safe*(1-q_pay)**p.theta
+                if p.safe_pay_rule == "tied" and mut[x] and not poster_killed: pay_safe = 0.0   # missed a planted mutant on this contract
+                if p.safe_pay_rule == "kill_required" and not poster_killed: pay_safe = 0.0     # no kill on this contract, no BSAFE pay
                 refuted = y[x] and rng.random() < 1 - np.exp(-p.lam*W)
                 if y[x]: st["fs_posted"] += 1; st["fs_survive"] += (not refuted)
                 poster = team[0]
@@ -162,7 +168,8 @@ def run(p: Params, seed=0):
     for t in ["honest", "lazy", "adv", "infl"]:
         if (types == t).any(): out[f"ml_{t}"] = ml_pay[types == t].mean()
     honest_p = (ptype == 0); honest_p[sybil] = False
-    out.update(prov_honest=prov_pay[honest_p].mean(), prov_sybil=prov_pay[sybil],
+    out.update(lazy_over_honest=(prov_pay[ptype == 1].mean()/prov_pay[honest_p].mean()) if n_lp else np.nan,
+               prov_honest=prov_pay[honest_p].mean(), prov_sybil=prov_pay[sybil],
                prov_lazy=prov_pay[ptype == 1].mean() if n_lp else np.nan,
                prov_cheat=prov_pay[ptype == 2].mean() if n_cp else np.nan)
     return out
