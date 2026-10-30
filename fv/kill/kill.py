@@ -1,17 +1,18 @@
 """FV kill filter: a mutant is 'killed' if halmos finds an input on which original and mutant runtime bytecode
 behave differently (success flag, returndata, ETH balance, or storage slots 0-7) from empty storage, one call.
-Usage: python kill.py [timeout_s] [families_limit]. Writes results/kill.csv. Build dir: fv/kill/proj (gitignored)."""
+Usage: python kill.py [solver_timeout_s] [worker/nworkers]; per-family wall cap KILL_FAMILY_CAP_S (240). Writes results/kill_<w>.csv; build dirs proj<w>/ (gitignored)."""
 import csv, json, os, re, shutil, subprocess, sys, time, pathlib
-R = pathlib.Path(__file__).resolve().parents[2]; DS = R / 'data/build/ds'; P = pathlib.Path(__file__).parent / 'proj'
-TO = int(sys.argv[1]) if len(sys.argv) > 1 else 20; LIM = int(sys.argv[2]) if len(sys.argv) > 2 else 10**9
-OUT = pathlib.Path(__file__).parent / 'results/kill.csv'; OUT.parent.mkdir(exist_ok=True)
+R = pathlib.Path(__file__).resolve().parents[2]; DS = R / 'data/build/ds'
+TO = int(sys.argv[1]) if len(sys.argv) > 1 else 20; W, NW = (int(x) for x in (sys.argv[2] if len(sys.argv) > 2 else '0/1').split('/'))
+CAP = int(os.environ.get('KILL_FAMILY_CAP_S', 240)); LIM = 10**9
+OUT = pathlib.Path(__file__).parent / f'results/kill_{W}.csv'; P = pathlib.Path(__file__).parent / f'proj{W}'; OUT.parent.mkdir(exist_ok=True)
 (P / 'test').mkdir(parents=True, exist_ok=True)
 if not (P / 'lib').exists(): os.symlink(R / 'fv/halmos/lib', P / 'lib')
 shutil.copy(R / 'fv/halmos/foundry.toml', P / 'foundry.toml')
 rows = list(csv.DictReader(open(DS / 'pairs.csv'))); fams = {}
 for r in rows: fams.setdefault(r['family'], []).append(r)
 def binf(r): return DS / 'bin' / (r['family'].replace('/', '__').removesuffix('.sol') + '__' + r['variant'] + '.bin')
-done = {(d['family'], d['variant']) for d in csv.DictReader(open(OUT))} if OUT.exists() else set()
+done = {(d['family'], d['variant']) for f in OUT.parent.glob('kill_*.csv') for d in csv.DictReader(open(f))}
 out = list(csv.DictReader(open(OUT))) if OUT.exists() else []
 HDR = '''// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
@@ -29,16 +30,16 @@ contract K is Test {
   }
 '''
 for n, (fam, rs) in enumerate(fams.items()):
-    if n >= LIM: break
+    if n % NW != W: continue
     orig = [r for r in rs if r['variant'] == 'orig'][0]; ob = binf(orig).read_text().strip()
     ms = [r for r in rs if r['is_mutant'] == '1' and (fam, r['variant']) not in done and binf(r).exists()]
     if not ms: continue
     body = HDR + ''.join(f'  function check_{r["variant"]}(bytes4 s, bytes32 x, bytes32 y, address c, uint96 v) public {{ d(hex"{ob}", hex"{binf(r).read_text().strip()}", s, x, y, c, v); }}\n' for r in ms) + '}\n'
     for f in (P / 'test').glob('*.sol'): f.unlink()
-    (P / 'test/K.t.sol').write_text(body); js = '/tmp/kill.json'; t0 = time.time()
+    (P / 'test/K.t.sol').write_text(body); js = f'/tmp/kill{W}.json'; t0 = time.time()
     try:
         subprocess.run(['halmos', '--solver-timeout-assertion', f'{TO}s', '--json-output', js, '--loop', '4'], cwd=P,
-                       capture_output=True, text=True, timeout=TO * len(ms) * 2 + 120)
+                       capture_output=True, text=True, timeout=min(TO * len(ms) * 2 + 120, CAP))
         res = {t['name'].split('(')[0].removeprefix('check_'): t for ts in json.load(open(js))['test_results'].values() for t in ts}
     except Exception as e: res = {}
     for r in ms:

@@ -1,0 +1,13 @@
+dataset/access_control/multiowned_vulnerable.sol 27 20.5
+dataset/access_control/mycontract.sol 3 4.2
+dataset/access_control/parity_wallet_bug_1.sol 40 127.0
+dataset/access_control/parity_wallet_bug_2.sol 40 124.8
+dataset/access_control/phishable.sol 3 4.5
+dataset/access_control/proxy.sol 2 3.7
+dataset/access_control/rubixi.sol 40 109.4
+dataset/access_control/unprotected0.sol 2 3.8
+dataset/access_control/wallet_02_refund_nosub.sol 29 21.9
+dataset/access_control/wallet_03_wrong_constructor.sol 28 20.9
+dataset/access_control/wallet_04_confused_sign.sol 28 18.7
+dataset/arithmetic/BECToken.sol 52 126.6
+dataset/arithmetic/insecure_transfer.sol 2 4.1

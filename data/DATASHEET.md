@@ -34,8 +34,7 @@ lines (1-based mutated lines), is_mutant.
 - Every SmartBugs original is *already vulnerable*. A mutant's label is `sb_labels ∪ injected_class`. There are no
   verified-clean contracts in this set; class-negatives are just "no label of this class".
 - **Injected ≠ semantically buggy.** Mutants are syntactic. Not all are exploitable (e.g. RELOP on a non-security
-  comparison, DELREQ on an input sanity check). `fv_killed` (Halmos property violated by mutant but not original)
-  is **not yet computed** for the 2,093 mutants; only hand-ported prototypes were killed (see `fv/README.md`).
+  comparison, DELREQ on an input sanity check). FV kill status: see the section at the end.
 - Mutant-vs-real distinguishability: measured gate AUC on the family-split test set is 0.827 (original vs own
   mutants) — mutants are fingerprintable. See `ml/README.md`.
 - All-0.4/0.5 bytecode. A detector can learn the compiler version. Match solc whenever mixing with other sets.
@@ -48,3 +47,11 @@ No license, so it is processed outside the repo: `data/dappscan/fetch_dappscan.s
 dropped, 0 hash duplicates among kept) from 76 DApps; DApp-hash split train/val/test = 158/18/61 contracts; 138
 compiled with solc ≥0.6. Label→function→PC mapping via AST `FunctionDefinition.src` + `srcmap-runtime`: 187/539
 labels mapped (the rest have function `N/A` or names not found in the AST). Labels are positive-only.
+
+## FV kill filter results (run 2026-10-30, `fv/kill/results/kill.csv`, `kill_summary.json`)
+All 2,093 mutants checked (116 families with ≥1 mutant), differential Halmos property, 10 s solver timeout, 240 s wall cap per family:
+**killed 755**, equiv_bounded 352, timeout 402, error 584 (`error` = no result, almost always the family wall cap).
+Killed by split: train 490 / val 106 / test 159. `fv/kill/summarize.py` writes `data/build/ds/pairs_killed.csv`
+(originals + killed mutants only), which is the novelty-watch "kill-only" set. **It has 755 pairs, which is under the
+2k target.** The 2,093 figure applies only to the unfiltered set. Raising the per-family cap and the number of calldata words should recover
+some of the 986 timeout/error rows; not run yet.

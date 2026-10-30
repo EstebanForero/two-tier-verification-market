@@ -1,0 +1,17 @@
+dataset/bad_randomness/guess_the_random_number.sol 6 15.7
+dataset/denial_of_service/auction.sol 5 9.3
+dataset/front_running/ERC20.sol 42 59.2
+dataset/other/open_address_lottery.sol 19 28.1
+dataset/reentrancy/0x627fa62ccbb1c1b04ffaecd72a53e37fc0e17839.sol 3 8.6
+dataset/reentrancy/0x941d225236464a25eb18076df7da6a91d0f95e9e.sol 1 4.0
+dataset/reentrancy/0xbe4041d55db380c5ae9d4a9b9703f1ed4e7e3888.sol 3 6.1
+dataset/reentrancy/reentrance.sol 1 4.1
+dataset/time_manipulation/roulette.sol 6 5.3
+dataset/unchecked_low_level_calls/0x39cfd754c85023648bf003bea2dd498c5612abfa.sol 3 8.0
+dataset/unchecked_low_level_calls/0x4b71ad9c1a84b9b643aa54fdd66e2dec96e8b152.sol 2 4.1
+dataset/unchecked_low_level_calls/0x663e4229142a27f00bafb5d087e1e730648314c3.sol 198 7.2
+dataset/unchecked_low_level_calls/0x84d9ec85c9c568eb332b7226a8f826d897e0a4a8.sol 14 24.3
+dataset/unchecked_low_level_calls/0xa46edd6a9a93feec36576ee5048146870ea2c3ae.sol 2 3.8
+dataset/unchecked_low_level_calls/0xbaa3de6504690efb064420d89e871c27065cdd52.sol 21 25.6
+dataset/unchecked_low_level_calls/0xe4eabdca81e31d9acbc4af76b30f532b6ed7f3bf.sol 28 20.8
+dataset/unchecked_low_level_calls/0xf70d589d76eebdd7c12cc5eec99f8f6fa4233b9e.sol 28 20.4

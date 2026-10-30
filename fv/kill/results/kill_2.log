@@ -1,0 +1,15 @@
+dataset/arithmetic/tokensalechallenge.sol 27 44.4
+dataset/bad_randomness/old_blockhash.sol 27 25.1
+dataset/front_running/odds_and_evens.sol 3 4.4
+dataset/reentrancy/0xb5e1b1ee15c6fa0e48fce100125569d430f1bd12.sol 1 4.0
+dataset/reentrancy/etherbank.sol 1 4.2
+dataset/reentrancy/reentrancy_dao.sol 6 5.3
+dataset/time_manipulation/ether_lotto.sol 6 6.6
+dataset/unchecked_low_level_calls/0x3f2ef511aa6e75231e4deafc7a3d2ecab3741de2.sol 28 25.7
+dataset/unchecked_low_level_calls/0x5aa88d2901c68fda244f1d0584400368d2c8e739.sol 19 20.8
+dataset/unchecked_low_level_calls/0x7a4349a749e59a5736efb7826ee3496a2dfd5489.sol 28 21.3
+dataset/unchecked_low_level_calls/0x958a8f594101d2c0485a52319f29b2647f2ebc06.sol 31 70.8
+dataset/unchecked_low_level_calls/0xb37f18af15bafb869a065b61fc83cfc44ed9cc27.sol 20 25.3
+dataset/unchecked_low_level_calls/0xd5967fed03e85d1cce44cab284695b41bc675b5c.sol 2 3.8
+dataset/unchecked_low_level_calls/0xec329ffc97d75fe03428ae155fc7793431487f63.sol 29 40.2
+dataset/unchecked_low_level_calls/lotto.sol 3 5.7

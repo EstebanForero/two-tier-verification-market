@@ -77,3 +77,5 @@ ETH balance and storage slots 0–7. A mutant counts as **killed** if Halmos fin
 difference exists in this scope, and **timeout** if there is no model within the 10 s solver timeout (or another failure).
 Limits: one call, starting from empty storage (no constructor state), and only 2 argument words. This is
 non-equivalence, i.e. a kill against a differential property, not against a security property. `results/kill.csv`.
+
+Results: killed 755 / equiv_bounded 352 / timeout 402 / error (wall cap) 584 of 2,093; see data/DATASHEET.md.
