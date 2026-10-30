@@ -9,6 +9,17 @@
 - Lazy base-rate reporters are heavily penalized, as intended. Adversaries lose more than honest screeners, but only slightly: the loss is quadratic, so it is cheap, which matches analysis §3.
 - Honest payoffs are slightly negative because the reference forecast includes their own report. A leave-one-out reference is required (analysis §1.1). Fix this in v0.2.
 
+## v0.2 (built)
+`sim/v02/core.py` and `sim/v02/experiments.py` implement:
+- the prover tier (honest, lazy, cheater, Sybil; mutant kills with 1/n or geometric rewards; invalid-certificate slashing)
+- the CFRW window W(q̂) with W_min, bond, φ burn, and refuter bonus
+- Sybil self-refutation (E4) and q̂-suppression collusion with snapshot/W_min/bond defenses (E5)
+- leave-one-out reference
+- aggregators: median, stake-capped trimmed, uncapped weighted mean, skill-weighted trimmed
+- 30-seed t-based 95% CIs
+
+Results are in `results_v02.md`. Not yet built: deployer agents, adaptive adversaries, capital lock-up costs, the commit-reveal/beacon layer (assumed ideal).
+
 ## Target module layout
 ```
 sim/

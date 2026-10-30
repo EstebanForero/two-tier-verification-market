@@ -56,6 +56,12 @@ Adversary controls stake fraction f of the capped aggregation weight and wants t
 
 Proposed fixes (summary): (1) random audit routing share η with recorded π and IPW scoring; (2) per-stake influence cap ω_max and trimmed aggregation; (3) commit-reveal of ML reports, prover claims, and refutation CEXs, beacon after reveal; (4) q̂ snapshot frozen before BSAFE; (5) geometric decay for duplicate kills; (6) bond burn share (1−φ) on every slash; (7) CEX bounties independent of routing; (8) window extension on late commits.
 
+## v0.2 simulation evidence (see results_v02.md; illustrative parameters)
+- Claim 3's tilt is reproduced: at ρ_bnd ≤ 0.5, inflators out-earn honest screeners. ρ_bnd must be paired with per-outcome reweighting.
+- §2.2's Sybil hole under 1/n is reproduced (1.48× honest). Geometric decay closes it (0.50×).
+- §3: a 60% low-side coalition (deflators + lazy) defeats both median and 25% trimming. Trimmed beats median by about 0.1 target recall but stays well below the no-attack level. Skill weighting from the audit set is the strongest fix tested, which strengthens the case for η > 0 as a *signal* source.
+- LOO removes self-influence, but a captured reference still lets deflators earn positive relative scores (uncapped mean). Propriety relative to the reference needs an honest-majority reference.
+
 ## References (read via WebFetch on Oct 30, 2026)
 - T. Gneiting, A. E. Raftery. Strictly Proper Scoring Rules, Prediction, and Estimation. JASA 102(477), 2007. https://sites.stat.washington.edu/raftery/Research/PDF/Gneiting2007jasa.pdf
 - J. Teutsch, C. Reitwießner. A scalable verification solution for blockchains (TrueBit), 2017. https://arxiv.org/abs/1908.04756
