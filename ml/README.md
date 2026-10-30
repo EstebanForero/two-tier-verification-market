@@ -42,3 +42,20 @@ On SmartBugs orig-only (n=15), calibration is meaningless (1–2 positives per c
 - SolidiFI: commit 4b0573e, 350/350 compiled, 350 unique runtimes, kept in /workspace/data/solidifi (contracts
   keep their Etherscan licenses, so no data goes in the repo). Its bugs are injected too, so it is not a real-bug set.
 - DeFiHackLabs: **not fetched / not run** (victim bytecode needs chain RPC or explorer access, not set up).
+
+## Length-matched gate (round 3, `ml/gate_matched.py`)
+Mutants matched to each "other" contract by nearest log bytecode length (caliper 0.10, 2 mutants per other, no replacement);
+grouped 5-fold CV (group = SmartBugs family / DApp / SolidiFI base contract); out-of-fold AUC, 95% CI by 1000x group bootstrap.
+
+| gate | n mut / other (groups) | length-only | opcode LR | opcode + length |
+|---|---|---|---|---|
+| mutant vs DAppSCAN solc<0.6 | 117 / 59 (33 / 24) | 0.344 [0.209, 0.498] | 0.971 [0.918, 0.996] | 0.966 [0.903, 0.994] |
+| mutant vs DAppSCAN all | 298 / 151 (38 / 62) | 0.478 [0.321, 0.621] | 0.984 [0.964, 0.998] | 0.985 [0.966, 0.999] |
+| mutant vs SolidiFI | 438 / 222 (17 / 50) | 0.360 [0.178, 0.548] | 0.996 [0.986, 1.000] | 0.995 [0.983, 1.000] |
+| mutant vs own original | 208 / 115 (115 families) | 0.519 [0.507, 0.531] | 0.737 [0.693, 0.781] | 0.707 [0.670, 0.748] |
+
+**Verdict:** matching removes length as a signal (length-only AUC at or below chance), yet the opcode gate *still separates*
+mutants from DAppSCAN and SolidiFI almost perfectly. So the corpus-level separation is not a length artifact; it is a
+corpus/provenance artifact (SmartBugs source style, compiler versions, contract idioms), i.e. the gate learns "which corpus",
+not "is buggy". Adding length as a covariate adds nothing. Only the within-family gate (mutant vs its own original, 0.74)
+measures bug-relevant signal, and it is modest. Cross-corpus AUCs must not be reported as bug detection.
