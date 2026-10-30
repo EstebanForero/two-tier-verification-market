@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.pdf
+out/
+cache/
+broadcast/
+data/raw/
+data/**/*.bin
+*.ckpt
+*.pt
+.env
