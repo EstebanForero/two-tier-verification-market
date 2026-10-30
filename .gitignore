@@ -20,3 +20,4 @@ data/dappscan/derived/
 ml/results/
 fv/halmos/cache/
 fv/halmos/out/
+ml/results/gate_matched.json
