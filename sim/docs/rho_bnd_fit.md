@@ -60,3 +60,6 @@ The crossover is between ρ = 0.5 and 0.6. ρ = 0.6 is not significantly differe
 
 ## Next measurement
 The next step is to run the dataset mutants (2,093, once a generic harness exists) to estimate P(D > k). That turns this into a usable ρ(k).
+
+## Update (v0.3)
+The sim can now derive ρ from k and the depth distribution (`docs/rho_depth.md`). A Bayes-consistent ρ is always ≥ 1−π, and across 216 configurations inflators never beat honest screeners significantly.

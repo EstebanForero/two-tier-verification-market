@@ -2,6 +2,7 @@
 Anchors from repo data (verification/pipeline/results_halmos.json, 17 Halmos checks on toy targets):
 FV detect ~0.8 (8/10 buggy variants killed), P(safe | pass) ~5/7 = 0.71."""
 import numpy as np
+import depth as _depth
 from dataclasses import dataclass, field
 
 def logit(p): return np.log(p / (1 - p))
@@ -46,6 +47,11 @@ class Params:
     ref_bonus: float = 0.0
     search_cost: float = 0.0  # effort cost per routed task searched (honest/cheat/Sybil); 0 reproduces v0.2
     safe_pay_rule: str = "base"  # base | tied | kill_required
+    # v0.3 depth-dependent rho (rho_mode="flat" reproduces v0.2 exactly)
+    rho_mode: str = "flat"       # flat | depth
+    bound_k: int = 4
+    depth_dist: object = None    # depth.Geometric / DiscretePareto / Empirical; None -> Geometric(0.5)
+    p_complete: object = None    # callable k -> P(run completes); None -> no timeouts
     collude_supp: bool = False; defend_supp: bool = False; sybil_selfref: bool = False
 
 def mutant_payout(k_honest, k_attacker_ids, J, scheme):
@@ -67,7 +73,12 @@ def run(p: Params, seed=0):
     prov_pay = np.zeros(p.n_prov); prov_kills = np.zeros(p.n_prov)
     st = dict(bugs=0, found=0, tbugs=0, tfound=0, fs_posted=0, fs_survive=0,
               burned=0.0, coll_profit=0.0, coll_tasks=0, selfref_profit=0.0)
-    for _ in range(p.epochs):
+    if p.rho_mode == "depth":
+        _dd = p.depth_dist or _depth.Geometric(0.5); _pc = p.p_complete or _depth.no_timeout
+        rho_safe = _depth.rho_bayes(p.base_rate, p.bound_k, _dd, _pc, p.detect)
+    else:
+        rho_safe = p.rho_bnd
+    for _ep in range(p.epochs):
         y = rng.random(p.n_tasks) < p.base_rate
         tgt = rng.random(p.n_tasks) < p.target_frac
         sig = np.clip(p.base_rate + 0.6*(y - p.base_rate) + rng.normal(0, .15, p.n_tasks), .01, .99)
@@ -89,11 +100,16 @@ def run(p: Params, seed=0):
         # ---------- prover tier ----------
         mut = rng.random(p.n_tasks) < p.mutant_rate
         cex_found = np.zeros(p.n_tasks, bool)
+        if p.rho_mode == "depth":   # separate stream: flat mode's main RNG sequence is untouched
+            drng = np.random.default_rng([seed, _ep, 7])
+            reach = (_dd.sample(drng, p.n_tasks) <= p.bound_k) & (drng.random(p.n_tasks) < _pc(p.bound_k))
+        else:
+            reach = np.ones(p.n_tasks, bool)
         for x in np.flatnonzero(routed):
             team = rng.choice(p.n_prov, p.prov_per_task, replace=False); poster_killed = False
             searchers = team[ptype[team] != 1]
             prov_pay[searchers] -= p.search_cost
-            hit_bug = searchers[rng.random(len(searchers)) < p.detect] if y[x] else []
+            hit_bug = searchers[rng.random(len(searchers)) < p.detect] if (y[x] and reach[x]) else []
             hit_mut = searchers[rng.random(len(searchers)) < p.detect] if mut[x] else []
             if len(hit_bug):
                 cex_found[x] = True
@@ -152,7 +168,7 @@ def run(p: Params, seed=0):
         A = np.flatnonzero(explore)
         if len(A):
             ya = (y[A] & cex_found[A]).astype(float)          # observed label
-            rho = np.where(ya == 1, 1.0, p.rho_bnd)            # bounded-safe resolutions get partial weight
+            rho = np.where(ya == 1, 1.0, rho_safe)            # bounded-safe resolutions get partial weight
             for i in range(p.n_ml):
                 others = np.delete(np.arange(p.n_ml), i)
                 ref = (agg_skill_trimmed(P[others][:, A], stake[others], skill[others]) if p.agg == "skill"
@@ -168,7 +184,7 @@ def run(p: Params, seed=0):
     for t in ["honest", "lazy", "adv", "infl"]:
         if (types == t).any(): out[f"ml_{t}"] = ml_pay[types == t].mean()
     honest_p = (ptype == 0); honest_p[sybil] = False
-    out.update(lazy_over_honest=(prov_pay[ptype == 1].mean()/prov_pay[honest_p].mean()) if n_lp else np.nan,
+    out.update(rho_safe=rho_safe, lazy_over_honest=(prov_pay[ptype == 1].mean()/prov_pay[honest_p].mean()) if n_lp else np.nan,
                prov_honest=prov_pay[honest_p].mean(), prov_sybil=prov_pay[sybil],
                prov_lazy=prov_pay[ptype == 1].mean() if n_lp else np.nan,
                prov_cheat=prov_pay[ptype == 2].mean() if n_cp else np.nan)
